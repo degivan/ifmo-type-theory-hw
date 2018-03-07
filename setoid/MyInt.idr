@@ -22,12 +22,12 @@ minus (Sub a b) (Sub c d) = Sub (a + d) (b + c)
 data Sign: MyInt -> Type where
   LessZero    : {a: Nat} -> {b: Nat} -> {x:Nat} -> (pr: a + S x = b) -> Sign $ Sub a b
   GreaterZero : {a: Nat} -> {b: Nat} -> {x:Nat} -> (pr: a = b + S x) -> Sign $ Sub a b
-  IsZero      : {a: Nat} -> {b: Nat}             -> (pr: a = b)     -> Sign $ Sub a b
+  IsZero      : {a: Nat} -> {b: Nat}            -> (pr: a = b)       -> Sign $ Sub a b
 
 sign: (x: MyInt) -> Sign x
-sign (Sub Z Z)        = IsZero Refl
-sign (Sub Z (S t))      = LessZero $ Refl
-sign (Sub (S t) Z)      = GreaterZero $ Refl
+sign (Sub Z Z)              = IsZero Refl
+sign (Sub Z (S t))          = LessZero $ Refl
+sign (Sub (S t) Z)          = GreaterZero $ Refl
 sign (Sub (S x) (S y)) with (sign (assert_smaller (Sub (S x) (S y)) (Sub x y)))
          | (LessZero pr)    = LessZero $ cong pr
          | (GreaterZero pr) = GreaterZero $ cong pr
@@ -98,7 +98,7 @@ intTrans x@(Sub a b) y@(Sub c d) z@(Sub e f) (ReflInt xyEq) (ReflInt yzEq) = Ref
             rewrite plusCommutative e b in expr1
 
 
-implementation VerifiedEquality MyInt EqInt where
+implementation VerifiedEquiv MyInt EqInt where
     refl = intRefl
     symm = intSymm
     trans = intTrans

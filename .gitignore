@@ -2,3 +2,8 @@
 .gitignore
 .idea/
 HomeworkTT.iml
+/setoid/MyInt.ibc
+setoid/MyInt.ibc
+setoid/MyRat.ibc
+setoid/Setoid.ibc
+target/

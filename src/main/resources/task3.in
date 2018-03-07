@@ -1,1 +1,1 @@
-let f=\t.\e.t in (f x) (f y)
+let f=\t.t in (f x) (f y)

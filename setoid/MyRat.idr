@@ -10,9 +10,9 @@ data MyRat: Type where
     Div : MyInt -> (n:Nat) -> Not (n = Z) -> MyRat
 
 multZeroLeftNZRightZero : {a,b:Nat} -> (a * b = Z) -> Not (a = Z) -> (b = Z)
-multZeroLeftNZRightZero {a=Z}             prf1 prf2   = void $ prf2 prf1
-multZeroLeftNZRightZero {a=(S a)} {b = Z} prf1 prf2   = Refl
-multZeroLeftNZRightZero {a=S a}{b= S b}   prf1 prf2   = void $ uninhabited prf1
+multZeroLeftNZRightZero {a=Z}             prf1 prf2  = void $ prf2 prf1
+multZeroLeftNZRightZero {a=(S a)} {b=Z} prf1 prf2    = Refl
+multZeroLeftNZRightZero {a=S a}{b=S b}   prf1 prf2   = void $ uninhabited prf1
 
 multNZLeftCancel : {d, a, b: Nat} -> Not (d = 0) -> d * a = d * b -> a = b
 multNZLeftCancel {a = Z} {b = Z} prfNZ prfEq            = Refl
@@ -130,7 +130,7 @@ ratTrans (Div (Sub a1 a2) b prfB) (Div (Sub c1 c2) d prfD) (Div (Sub e1 e2) f pr
         p4 = c2 * f * b
 
         exprC12ToLeftSecond : ((c1 * f) * b  + (c2 * b) * f) + ((a1 * d) * f + (e2 * d) * b) =
-                  ((c1 * b) * f + (c2 * f) * b) + ((e1 * d) * b + (a2 * d) * f)
+                              ((c1 * b) * f + (c2 * f) * b) + ((e1 * d) * b + (a2 * d) * f)
         exprC12ToLeftSecond = rewrite plusCommutative p3 p2 in
                   rewrite plusAssociative (p1 + p4) p2 p3 in
                   rewrite plusCommutative (p1 + p4) p2 in
@@ -140,34 +140,34 @@ ratTrans (Div (Sub a1 a2) b prfB) (Div (Sub c1 c2) d prfD) (Div (Sub e1 e2) f pr
                   rewrite plusCommutative p4 p3 in exprC12ToLeft
 
         changeC1BFOrder : ((c1 * b) * f  + (c2 * f) * b) =
-                ((c1 * f) * b + (c2 * f) * b)
+                          ((c1 * f) * b + (c2 * f) * b)
         changeC1BFOrder = rewrite sym $ multAssociative c1 b f in
                 rewrite multCommutative b f in
                 rewrite multAssociative c1 f b in
                 Refl
 
         exprFirstAdjusted : ((c1 * f) * b  + (c2 * b) * f) + ((a1 * d) * f + (e2 * d) * b) =
-                   ((c1 * f) * b + (c2 * f) * b) + ((e1 * d) * b + (a2 * d) * f)
+                            ((c1 * f) * b + (c2 * f) * b) + ((e1 * d) * b + (a2 * d) * f)
         exprFirstAdjusted = rewrite sym $ changeC1BFOrder in exprC12ToLeftSecond
 
         exprC1FBDeleted : (c2 * b) * f + ((a1 * d) * f + (e2 * d) * b) =
-                    (c2 * f) * b + ((e1 * d) * b + (a2 * d) * f)
+                          (c2 * f) * b + ((e1 * d) * b + (a2 * d) * f)
         exprC1FBDeleted = plusLeftCancel ((c1 * f) * b) ((c2 * b) * f + ((a1 * d) * f + (e2 * d) * b)) ((c2 * f) * b + ((e1 * d) * b + (a2 * d) * f)) $
                         rewrite plusAssociative ((c1 * f) * b)  ((c2 * b) * f) ((a1 * d) * f + (e2 * d) * b) in
                         rewrite plusAssociative ((c1 * f) * b) ((c2 * f) * b) (((e1 * d) * b + (a2 * d) * f)) in exprFirstAdjusted
 
         changeOrderFirst : (c2 * b) * f + (v1 + v2) =
-                 (c3 * f) * b + (v3 + v4) -> (c2 * f) * b + (v1 + v2) = (c3 * f) * b + (v3 + v4)
+                           (c3 * f) * b + (v3 + v4) -> (c2 * f) * b + (v1 + v2) = (c3 * f) * b + (v3 + v4)
         changeOrderFirst eq = rewrite sym $ multAssociative c2 f b in
                      rewrite multCommutative f b in
                      rewrite multAssociative c2 b f in eq
 
         exprC2FBBothLeft : (c2 * f) * b + ((a1 * d) * f + (e2 * d) * b) =
-                     (c2 * f) * b + ((e1 * d) * b + (a2 * d) * f)
+                           (c2 * f) * b + ((e1 * d) * b + (a2 * d) * f)
         exprC2FBBothLeft = changeOrderFirst exprC1FBDeleted
 
         exprC2FBDeleted : (a1 * d) * f + (e2 * d) * b =
-                   (e1 * d) * b + (a2 * d) * f
+                          (e1 * d) * b + (a2 * d) * f
         exprC2FBDeleted = plusLeftCancel _ ((a1 * d) * f + (e2 * d) * b) ((e1 * d) * b + (a2 * d) * f) exprC2FBBothLeft
 
         exprReorder : (a1 * d) * f + (e2 * d) * b = (a2 * d) * f + (e1 * d) * b
@@ -193,7 +193,7 @@ ratTrans (Div (Sub a1 a2) b prfB) (Div (Sub c1 c2) d prfD) (Div (Sub e1 e2) f pr
         res = rewrite plusCommutative (e1 * b) (a2 * f) in multNZLeftCancel prfD exprDFirst
 
 
-implementation VerifiedEquality MyRat EqRat where
+implementation VerifiedEquiv MyRat EqRat where
     refl  = ratRefl
     symm  = ratSymm
     trans = ratTrans

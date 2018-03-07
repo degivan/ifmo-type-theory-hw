@@ -27,12 +27,12 @@ symm_eq _ _ = sym
 trans_eq : Trans (=)
 trans_eq _ _  _ = trans
 
-interface VerifiedEquality a (e : Relation a) where
+interface VerifiedEquiv a (e : Relation a) where
     refl  : Rfl e
     symm  : Symm e
     trans : Trans e
 
-[intensional] VerifiedEquality a (=) where
+[intensional] VerifiedEquiv a (=) where
     refl = refl_eq
     symm = symm_eq
     trans = trans_eq
